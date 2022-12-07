@@ -86,7 +86,7 @@ def friendsfeed(request):
         post_to_like = request.POST.get("like")
         print(post_to_like)
         like_already_exists = Like.objects.filter(post_id=post_to_like,username=request.user)
-        if not like_already_exists():
+        if not like_already_exists.exists():
             Like.objects.create(post_id=post_to_like,username=request.user)
             return redirect("FeedApp:friendsfeed")
 
@@ -103,16 +103,18 @@ def comments(request, post_id):
     post = Post.objects.get(id=post_id)
 
     context = {'post':post, 'comments': comments}
-    
     return render(request, 'FeedApp/comments.html', context)
 
 @login_required
 def friends(request):
     admin_profile = Profile.objects.get(user=1)
     user_profile = Profile.objects.get(user=request.user)
-
+    
     user_friends = user_profile.friends.all()
     user_friends_profiles = Profile.objects.filter(user__in=user_friends)
+    print(user_friends)
+    print(user_friends_profiles)
+
 
     user_relationships = Relationship.objects.filter(sender=user_profile)
     request_sent_profiles = user_relationships.values('receiver')
@@ -132,7 +134,7 @@ def friends(request):
         return redirect('FeedApp:friends')
 
     if request.method == 'POST' and request.POST.get("receive_requests"):
-        senders = request.POST.getlist("friend_requests")
+        senders = request.POST.getlist("receive_requests")
         for sender in senders:
             Relationship.objects.filter(id=sender).update(status='accepted')
 
@@ -142,5 +144,4 @@ def friends(request):
             relationship_obj.sender.friends.add(request.user)
 
     context = {'user_friends_pofiles':user_friends_profiles,'user_relationships':user_relationships,'all_profiles':all_profiles,'request_received_profiles':request_received_profiles}
-    
     return render(request, 'FeedApp/friends.html',context)
