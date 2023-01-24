@@ -1,9 +1,11 @@
 {% extends "FeedApp/base.html" %}
 
 {% block page_header %}
+<body style="background-color:powderblue;">
     <div class="jumbotron">
-       <h1 class="display-3">Feed</h1>
-            <p class="lead">A Social Network where you can be you.
+        <h1 style="font-family: Brush Script MT, cursive;" class="display-3">Ferver</h1>
+        
+            <p style= "font-family: Baskerville, serif;" class="lead">A Social Network where you can be yourself.
             </p>
 
             <a class="btn btn-lg btn-outline-primary" href="{% url 'users:register' %}"
